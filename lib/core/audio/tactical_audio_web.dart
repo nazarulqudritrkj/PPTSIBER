@@ -104,3 +104,6 @@ class TacticalAudioImplementation implements TacticalAudioPlatform {
     } catch (_) {}
   }
 }
+
+TacticalAudioPlatform getAudioPlatform() => TacticalAudioImplementation();
+
