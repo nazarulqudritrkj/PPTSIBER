@@ -1,6 +1,8 @@
 import 'package:web/web.dart' as web;
 import 'tactical_audio_interface.dart';
 
+/// Implementasi audio Web sintetis profesional dengan akustik lembut,
+/// bebas dari distorsi nada tajam, memberikan sensasi haptic audio eksekutif.
 class TacticalAudioImplementation implements TacticalAudioPlatform {
   web.AudioContext? _ctx;
 
@@ -31,20 +33,20 @@ class TacticalAudioImplementation implements TacticalAudioPlatform {
       final gain = ctx.createGain();
       final double now = ctx.currentTime.toDouble();
 
-      // High-tech crisp rising whoosh + tactical affirmative click: 440Hz -> 920Hz
+      // Soft air whoosh feedback: 480Hz -> 720Hz (gelombang sinus halus, volume terkalibrasi lembut)
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(440, now);
-      osc.frequency.exponentialRampToValueAtTime(920, now + 0.12);
+      osc.frequency.setValueAtTime(480, now);
+      osc.frequency.exponentialRampToValueAtTime(720, now + 0.10);
 
       gain.gain.setValueAtTime(0.001, now);
-      gain.gain.linearRampToValueAtTime(0.12, now + 0.02);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.16);
+      gain.gain.linearRampToValueAtTime(0.045, now + 0.025);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.13);
 
       osc.connect(gain);
       gain.connect(ctx.destination);
 
       osc.start(now);
-      osc.stop(now + 0.17);
+      osc.stop(now + 0.14);
     } catch (_) {}
   }
 
@@ -59,20 +61,20 @@ class TacticalAudioImplementation implements TacticalAudioPlatform {
       final gain = ctx.createGain();
       final double now = ctx.currentTime.toDouble();
 
-      // Reverse resonant harmonic cue: 880Hz -> 380Hz
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(880, now);
-      osc.frequency.exponentialRampToValueAtTime(380, now + 0.14);
+      // Soft warm return harmonic cue: 620Hz -> 420Hz (sinus lembut, transisi natural)
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(620, now);
+      osc.frequency.exponentialRampToValueAtTime(420, now + 0.11);
 
       gain.gain.setValueAtTime(0.001, now);
-      gain.gain.linearRampToValueAtTime(0.10, now + 0.02);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+      gain.gain.linearRampToValueAtTime(0.040, now + 0.025);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
 
       osc.connect(gain);
       gain.connect(ctx.destination);
 
       osc.start(now);
-      osc.stop(now + 0.19);
+      osc.stop(now + 0.15);
     } catch (_) {}
   }
 
@@ -87,19 +89,18 @@ class TacticalAudioImplementation implements TacticalAudioPlatform {
       final gain = ctx.createGain();
       final double now = ctx.currentTime.toDouble();
 
+      // Subtle tactile blip: 850Hz, durasi mikro 35ms
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(1100, now);
+      osc.frequency.setValueAtTime(850, now);
 
-      gain.gain.setValueAtTime(0.07, now);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+      gain.gain.setValueAtTime(0.035, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.035);
 
       osc.connect(gain);
       gain.connect(ctx.destination);
 
       osc.start(now);
-      osc.stop(now + 0.05);
+      osc.stop(now + 0.04);
     } catch (_) {}
   }
 }
-
-TacticalAudioPlatform getAudioPlatform() => TacticalAudioImplementation();

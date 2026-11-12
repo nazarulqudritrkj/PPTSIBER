@@ -551,6 +551,7 @@ class _NavButtonState extends State<_NavButton>
   @override
   Widget build(BuildContext context) {
     return MouseRegion(
+      cursor: widget.isActive ? SystemMouseCursors.click : SystemMouseCursors.basic,
       onEnter: (_) {
         if (widget.isActive) {
           setState(() => _isHovered = true);
