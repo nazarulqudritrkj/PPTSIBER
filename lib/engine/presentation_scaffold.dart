@@ -4,7 +4,6 @@ import '../core/theme/ppt_colors.dart';
 import '../core/theme/ppt_typography.dart';
 import '../core/painters/sumatera_ornament_painter.dart';
 import 'slide_controller.dart';
-import 'slide_transition_builder.dart';
 
 class PresentationScaffold extends StatefulWidget {
   final SlideController controller;
@@ -24,11 +23,14 @@ class _PresentationScaffoldState extends State<PresentationScaffold>
     with TickerProviderStateMixin {
   late final AnimationController _ornamentController;
   late final AnimationController _glowController;
+  late final PageController _pageController;
   final FocusNode _focusNode = FocusNode();
 
   @override
   void initState() {
     super.initState();
+    _pageController = PageController(initialPage: widget.controller.currentIndex);
+    widget.controller.addListener(_onSlideChanged);
     _ornamentController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 60),
@@ -39,8 +41,23 @@ class _PresentationScaffoldState extends State<PresentationScaffold>
     )..repeat(reverse: true);
   }
 
+  void _onSlideChanged() {
+    if (_pageController.hasClients) {
+      final targetPage = widget.controller.currentIndex;
+      if ((_pageController.page ?? 0).round() != targetPage) {
+        _pageController.animateToPage(
+          targetPage,
+          duration: const Duration(milliseconds: 520),
+          curve: Curves.easeInOutCubic,
+        );
+      }
+    }
+  }
+
   @override
   void dispose() {
+    widget.controller.removeListener(_onSlideChanged);
+    _pageController.dispose();
     _focusNode.dispose();
     _ornamentController.dispose();
     _glowController.dispose();
@@ -153,13 +170,16 @@ class _PresentationScaffoldState extends State<PresentationScaffold>
                         ),
                       ),
 
-                      // ── 4. Main Slide with Rich Bidirectional Kinetic Transition
+                      // ── 4. Main Slide Presentation Viewport (100% Bebas Tabrakan Teks) ──
                       Positioned.fill(
-                        child: SlideTransitionSwitcher(
-                          direction: widget.controller.lastDirection,
-                          child: KeyedSubtree(
-                            key: ValueKey<int>(widget.controller.currentIndex),
-                            child: widget.slides[widget.controller.currentIndex],
+                        child: ClipRect(
+                          child: PageView.builder(
+                            controller: _pageController,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: widget.slides.length,
+                            itemBuilder: (context, index) {
+                              return widget.slides[index];
+                            },
                           ),
                         ),
                       ),
